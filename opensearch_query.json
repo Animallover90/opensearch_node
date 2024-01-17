@@ -1,0 +1,865 @@
+GET _search
+{
+  "query": {
+    "match_all": {}
+  }
+}
+
+GET _analyze
+{
+  "analyzer": "standard",
+  "text": "aaa bbccc"
+}
+
+GET _analyze
+{
+  "tokenizer": "seunjeon_tokenizer",
+  "text": "안녕하세요 abc defbbbbbb123"
+}
+
+PUT test-index
+{
+"mappings": {
+    "properties": {
+      "id": {
+        "type": "keyword"
+      },
+      "title": {
+        "type": "text"
+      },
+      "price": {
+        "type": "double"
+      },
+      "create_date": {
+        "type": "date"
+      },
+      "ttl": {
+        "type": "integer"
+      },
+      "nested_data": {
+        "type": "nested",
+        "properties": {
+          "name": {
+            "type": "text"
+          },
+          "creation_date": {
+            "type": "date",
+            "format": "date_hour_minute_second||strict_date_hour_minute_second"
+          }
+        }
+      },
+      "object_data": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "object"
+          },
+          "timestamp": {
+            "type": "date", 
+            "format": "date_time||strict_date_time"
+          }
+        }
+      }
+    }
+  }
+}
+
+GET test-index/_search_shards
+
+DELETE test-index
+
+
+
+
+
+POST _bulk
+{"index":{"_index":"test-index","_id":"1"}}
+{"id": "aaa","title": "bbb","price": 1.1,"create_date": "2024-01-11","ttl": 177777,"nested_data": [{"name":"jhon smith", "creation_date":"2024-01-11T00:00:00"}], "object_data":[{"email":{"mail":"b@gmail.com","verified":true},"timestamp":"2024-01-11T15:51:58.858Z"}]}
+{"index":{"_index":"test-index","_id":"2"}}
+{"id": "sss","title": "bbb","price": 2.1,"create_date": "2023-01-11","ttl": 160000,"nested_data": [{"name":"jhon andrew", "creation_date":"2023-01-11T00:00:00"}], "object_data":[{"email":{"mail":"c@gmail.com","verified":true},"timestamp":"2023-01-11T15:51:58.858Z"}]}
+{"index":{"_index":"test-index","_id":"3"}}
+{"id": "qqq","title": "bbb aaa ccc","price": 3.1,"create_date": "2022-01-11","ttl": 180000,"nested_data": [{"name":"june kim", "creation_date":"2022-01-11T00:00:00"}], "object_data":[{"email":{"mail":"a@naver.com","verified":true},"timestamp":"2022-01-11T15:51:58.858Z"}]}
+{"index":{"_index":"test-index","_id":"4"}}
+{"id": "www","title": "bbbaaaccc","price": 4.1,"create_date": "2021-01-11","ttl": 190000,"nested_data": [{"name":"andrew lee", "creation_date":"2021-01-11T00:00:00"}], "object_data":[{"email":{"mail":"a@naver.com","verified":true},"timestamp":"2021-01-11T15:51:58.858Z"}]}
+{"index":{"_index":"test-index","_id":"5"}}
+{"id": "eee","title": "a bbbaaaccc","price": 5.1,"create_date": "2020-01-11","ttl": 200000}
+
+POST test-index/_doc/6
+{
+  "id": "rrr",
+  "title": "ccc",
+  "price": 6.1,
+  "create_date": "2019-01-11"
+}
+
+POST test-index/_doc/7
+{
+  "id": "rrr",
+  "title": null,
+  "price": 6.1,
+  "create_date": "2019-01-11"
+}
+
+POST test-index/_doc/8
+{
+  "id": "rrr",
+  "title": "null",
+  "price": 6.1,
+  "create_date": "2019-01-11"
+}
+
+POST test-index/_doc/9
+{"id": "www","title": "bbbaaaccc","price": 4.1,"create_date": "2021-01-11","ttl": 190000,"nested_data": null, "object_data": null}
+
+POST test-index/_doc/10
+{"id": "www","title": "bbbaaaccc","price": 4.1,"create_date": "2021-01-11","ttl": 190000,"nested_data": [{"name":null, "creation_date":"2021-01-11T00:00:00"}], "object_data":[{"email":null,"timestamp":"2021-01-11T15:51:58.858Z"}]}
+
+POST test-index/_doc/11
+{"id": "www","title": "bbbaaaccc","price": 4.1,"create_date": "2021-01-11","ttl": 190000,"nested_data": [{"name":"null", "creation_date":"2021-01-11T00:00:00"}], "object_data":[{"email":{"mail":"a@naver.com","verified":true},"timestamp":"2021-01-11T15:51:58.858Z"}]}
+
+DELETE test-index/_doc/11
+
+GET test-index/_doc/1
+
+
+
+
+
+GET test-index/_search
+{
+  "query": {
+    "match_all": {}
+  }
+}
+
+GET test-index/_search
+{
+  "query": {
+    "match": {
+      "title": "bbb"
+    }
+  }
+}
+
+GET test-index/_search
+{
+  "query": {
+    "match": {
+      "title": {
+        "query" :"bbb ccc",
+        "operator": "and"
+      }
+    }
+  }
+}
+
+GET test-index/_search
+{
+  "query": {
+    "match_phrase": {
+      "title": "bbb ccc"
+    }
+  }
+}
+
+GET test-index/_search
+{
+  "query": {
+    "match_phrase": {
+      "title": {
+        "query": "bbb ccc",
+        "slop": 1
+      }
+     }
+  }
+}
+
+GET test-index/_search
+{
+  "query": {
+    "match_phrase_prefix": {
+      "title": "aa"
+    }
+  }
+}
+
+GET test-index/_search
+{
+  "query": {
+    "multi_match": {
+      "query": "aaa bbb",
+      "fields": ["id", "title"]
+    }
+  }
+}
+
+GET test-index/_search
+{
+  "query": {
+    "nested": {
+      "path": "nested_data",
+      "query": {
+        "match": {
+          "nested_data.name": "june"
+        }
+      }
+    }
+  }
+}
+
+GET test-index/_search
+{
+  "query": {
+    "match": {
+      "object_data.email.mail": "a"
+    }
+  }
+}
+
+
+
+
+
+GET test-index/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {}
+      ],
+      "must_not": [
+        {}
+      ],
+      "should": [
+        {}
+      ],
+      "filter": [
+        {}
+      ]
+    }
+  }
+}
+
+GET test-index/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "title": "bbb"
+          }
+        }
+      ],
+      "should": [
+        {
+          "match": {
+            "id": "qqq"
+          }
+        },
+        {
+          "match_phrase": {
+            "create_date": "2022-01-11"
+          }
+        }
+      ]
+    }
+  }
+}
+
+GET test-index/_search
+{
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "term": {
+            "title": "bbb"
+          }
+        },
+        {
+          "terms": {
+            "title": [
+              "aaa",
+              "ccc"
+            ]
+          }
+        },
+        {
+          "range": {
+            "ttl": {
+              "gte": 100000,
+              "lte": 180000
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+
+GET test-index/_search
+{
+  "query": {
+    "bool": {
+      "must": { "match_all": {} },
+      "filter": {
+        "range": {
+          "create_date": {
+            "gte": "2022-01-01",
+            "lte": "2023-01-01"
+          }
+        }
+      }
+    }
+  }
+}
+
+GET test-index/_search
+{
+  "query": {
+    "bool": {
+      "must": { "match_all": {} },
+      "filter": {
+        "range": {
+          "create_date": {
+            "gte" : "now-30d+9h"
+          }
+        }
+      }
+    }
+  }
+}
+
+
+
+
+GET test-index/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "title": "bbb"
+          }
+        },
+        {
+          "term": {
+            "title": {
+              "value": "ccc"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+
+GET test-index/_search
+{
+  "query": {
+    "bool": {
+      "should": [
+        {
+          "match": {
+            "title": "bbb"
+          }
+        },
+        {
+          "term": {
+            "title": {
+              "value": "ccc"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+
+GET test-index/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "dis_max": {
+            "tie_breaker": 0.7, 
+            "queries": [
+              {
+                "match": {
+                  "title": "bbb"
+                }
+              },
+              {
+                "term": {
+                  "title": {
+                    "value": "ccc"
+                  }
+                }
+              },
+              {
+                "term": {
+                  "id": {
+                    "value": "aaa"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
+
+
+
+
+GET test-index/_search
+{
+  "query": {
+    "term": {
+      "id": {
+        "value": "aaa"
+      }
+    }
+  }
+}
+
+GET test-index/_search
+{
+  "query": {
+    "terms": {
+      "_id": ["1", "2"]
+    }
+  }
+}
+
+
+GET test-index/_search
+{
+  "query": {
+    "regexp":{
+      "title": "b.*c"
+    }
+  }
+}
+
+
+
+
+GET test-index/_search
+{
+   "from" : 0,
+   "size" : 2,
+   "query":{
+      "match_all":{}
+   }
+}
+
+GET test-index/_search
+{
+   "query":{
+      "match_all":{}
+   },
+   "sort" : [
+      { "ttl" : "desc" },
+      "_score"
+    ]
+}
+
+GET test-index/_search
+{
+   "query":{
+      "match_all":{}
+   },
+   "_source": ["id","title"]
+}
+
+
+
+
+GET test-index/_search
+{
+  "query": {
+    "exists": {
+      "field": "title"
+    }
+  }
+}
+
+GET test-index/_search
+{
+  "query": {
+    "nested": {
+      "path": "nested_data",
+      "query": {
+        "exists": {
+          "field": "nested_data"
+        }
+      }
+    }
+  }
+}
+
+GET test-index/_search
+{
+  "query": {
+    "nested": {
+      "path": "nested_data",
+      "query": {
+        "exists": {
+          "field": "nested_data.name"
+        }
+      }
+    }
+  }
+}
+
+GET test-index/_search
+{
+  "query": {
+    "exists": {
+      "field": "object_data"
+    }
+  }
+}
+
+GET test-index/_search
+{
+  "query": {
+    "exists": {
+      "field": "object_data.email"
+    }
+  }
+}
+
+
+
+
+
+
+DELETE start_search
+
+
+PUT start_search
+{
+  "settings": {
+    "analysis": {
+      "normalizer": {
+        "keyword_lowercase": {
+          "type": "custom",
+          "filter": ["lowercase"]
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "title": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "normalizer": "keyword_lowercase"
+          }
+        }
+      }
+    }
+  }
+}
+
+
+POST _bulk
+{"index":{"_index":"start_search","_id":"1"}}
+{"title":"Apple"}
+{"index":{"_index":"start_search","_id":"2"}}
+{"title":"apple"}
+{"index":{"_index":"start_search","_id":"3"}}
+{"title":"Apple's book"}
+{"index":{"_index":"start_search","_id":"4"}}
+{"title":"apple's phone"}
+{"index":{"_index":"start_search","_id":"5"}}
+{"title":"Apple Code"}
+{"index":{"_index":"start_search","_id":"6"}}
+{"title":"sub by apple"}
+{"index":{"_index":"start_search","_id":"7"}}
+{"title":"play with Apple"}
+{"index":{"_index":"start_search","_id":"8"}}
+{"title":"start Apple Academy"}
+{"index":{"_index":"start_search","_id":"9"}}
+{"title":"dpple"}
+{"index":{"_index":"start_search","_id":"9"}}
+{"title":"afple"}
+
+
+
+
+
+GET start_search/_search
+{
+  "query": {
+    "prefix": {
+      "title": {
+        "value": "appl"
+      }
+    }
+  }
+}
+
+GET start_search/_search
+{
+  "query": {
+    "prefix": {
+      "title.keyword": {
+        "value": "appl"
+      }
+    }
+  }
+}
+
+
+
+
+
+## 바꾸기
+GET start_search/_search
+{
+  "query": {
+    "fuzzy": {
+      "title": {
+        "value": "spple",  
+        "fuzziness": 1
+      }
+    }
+  }
+}
+GET start_search/_search
+{
+  "query": {
+    "fuzzy": {
+      "title": {
+        "value": "appld",  
+        "fuzziness": 1
+      }
+    }
+  }
+}
+
+
+## 추가하기
+GET start_search/_search
+{
+  "query": {
+    "fuzzy": {
+      "title": {
+        "value": "aple",  
+        "fuzziness": 1
+      }
+    }
+  }
+}
+
+## 빼기
+GET start_search/_search
+{
+  "query": {
+    "fuzzy": {
+      "title": {
+        "value": "appl!e",  
+        "fuzziness": 1
+      }
+    }
+  }
+}
+
+
+
+
+GET start_search/_search
+{
+  "query": {
+    "bool": {
+      "should": [
+        {
+          "fuzzy": {
+            "title.keyword": {
+              "value": "apple",
+              "fuzziness": 1
+            }
+          }
+        },
+        {
+          "prefix": {
+            "title.keyword": {
+              "value": "apple"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+
+
+GET start_search/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "prefix": {
+            "title.keyword": {
+              "value": "apple"
+            }
+          }
+        }
+      ],
+      "should": [
+        {
+          "fuzzy": {
+            "title.keyword": {
+              "value": "apple"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+
+GET start_search/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "prefix": {
+            "title": {
+              "value": "apple"
+            }
+          }
+        }
+      ],
+      "should": [
+        {
+          "fuzzy": {
+            "title.keyword": {
+              "value": "apple"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+
+
+
+
+PUT my-index-000001
+{
+  "settings": {
+    "index.mapping.ignore_malformed": true,
+    "analysis": {
+      "normalizer": {
+        "keyword_lowercase": {
+          "type": "custom",
+          "filter": ["lowercase"]
+        }
+      },
+      "tokenizer": {
+        "seunjeon": {
+          "type": "seunjeon_tokenizer"
+        }
+      },
+      "analyzer": {
+        "seunjeon_analyzer": {
+          "type": "custom",
+          "tokenizer": "seunjeon",
+          "filter": [
+            "lowercase"
+          ]
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "name": { 
+        "type": "text",
+        "analyzer": "seunjeon_analyzer",
+        "search_analyzer": "seunjeon_analyzer"
+      },
+      "startwith": { 
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "normalizer": "keyword_lowercase"
+          }
+        }
+      }
+    }
+  }
+}
+
+DELETE my-index-000001
+
+
+
+
+PUT /_ingest/pipeline/startwith-pipeline
+{
+   "description":"startswith text searching property",
+   "processors":[
+    {
+      "set": {
+        "field": "startwith",
+        "value": "{{{name}}}"
+      }
+    }
+   ] 
+}
+
+GET /_ingest/pipeline/startwith-pipeline
+
+
+
+
+PUT my-index-000001/_settings 
+{ 
+  "index.default_pipeline": "startwith-pipeline" 
+}
+
+POST _ingest/pipeline/startwith-pipeline/_simulate
+{
+  "docs": [
+    {
+      "_index": "my-index-000001",
+      "_id": "1",
+      "_source": {
+        "name": "abc"
+      }
+    }
+  ]
+}
+
+
+
+PUT my-index-000001/_doc/1
+{
+  "name": "abc"
+}
+
+PUT my-index-000001/_doc/2
+{
+  "name": "aa abc"
+}
+
+
+
+GET my-index-000001/_doc/1
+
